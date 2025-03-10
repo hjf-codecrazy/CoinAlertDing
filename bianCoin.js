@@ -2,6 +2,14 @@ import axios from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { sendDingTalkMessage } from './sendDingTalkMessage.js'; // 导入发送钉钉消息的模块
 import TokenAnnouncementChecker from './TokenAnnouncementChecker.js';
+// 目标价格阈值
+const TARGET_PRICE_ETH = 3079;
+const TARGET_PRICE_BTC = 50000;
+// 使用 let 声明以便更新目标价格
+let targetPriceBTCHigh = 67000; // BTC的目标高价
+let targetPriceBTCLow = 66000; // BTC的目标低价
+let targetPriceETHHigh = 3700; // ETH的目标高价
+let targetPriceETHLow = 3600; // ETH的目标低价
 // 阿里云短信服务配置
 const SMS_API_HOST = "https://gyytz.market.alicloudapi.com";
 const SMS_API_PATH = "/sms/smsSend";
@@ -20,29 +28,6 @@ const axiosInstance = axios.create({
     httpsAgent: agent
 });
 
-// 函数：获取ETH/USDT的价格
-async function fetchETHPrice() {
-    const url = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT';
-    try {
-        const response = await axiosInstance.get(url);
-        return parseFloat(response.data.price);
-    } catch (error) {
-        console.error('Error fetching ETH price:', error);
-        throw error;
-    }
-}
-
-// 函数：获取BTC/USDT的价格
-async function fetchBTCPrice() {
-    const url = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT';
-    try {
-        const response = await axiosInstance.get(url);
-        return parseFloat(response.data.price);
-    } catch (error) {
-        console.error('Error fetching BTC price:', error);
-        throw error;
-    }
-}
 let lastTokenSymbol = null;  // 用于存储上一次的 tokenSymbol
 let lastSentTime = null;  // 用于存储上一次发送消息的时间
 // 定义通用的正则表达式
@@ -117,7 +102,8 @@ async function checkAllAnnouncements() {
 const targetPrices = {
     ETH: { high: 3700, low: 3600 },
     BTC: { high: 67000, low: 66000 },
-    BNB: { high: 500, low: 490 }, // 示例新增BNB
+    BNB: { high: 500, low: 490 },
+    XRP: { high: 3.0, low: 2.2 },
 };
 
 // 初始化每种币的价格波动范围
@@ -125,13 +111,14 @@ const targetRanges = {
     ETH: 30,
     BTC: 300,
     BNB: 10, 
+    XRP:0.1
 };
 
 // 主函数：获取价格并发送通知
 async function main() {
     try {
         // 定义需要获取价格的币种
-        const symbols = ['ETH', 'BTC', 'BNB'];
+        const symbols = ['ETH', 'BTC', 'BNB', 'XRP'];
         const prices = {};
         const notifications = []; // 用于收集需要发送的通知内容
 
