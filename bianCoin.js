@@ -136,7 +136,7 @@ async function main() {
             if (targetPrices[symbol].high <= price || targetPrices[symbol].low >= price) {
                 console.log(`${symbol} target price reached: ${price}`);
                 // 更新目标价格
-                targetPrices[symbol].high = price +   [symbol];
+                targetPrices[symbol].high = price +  targetRanges[symbol] ;
                 targetPrices[symbol].low = price - targetRanges[symbol];
                 // 添加到通知内容
                 notifications.push(`${symbol} Price: ${price}`);
