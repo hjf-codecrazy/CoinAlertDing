@@ -103,7 +103,7 @@ const targetPrices = {
     ETH: { high: 3700, low: 3600 },
     BTC: { high: 67000, low: 66000 },
     BNB: { high: 500, low: 490 },
-    XRP: { high: 3.0, low: 2.5 },
+    XRP: { high: 10.0, low: 9.0 },
 };
 
 // 初始化每种币的价格波动范围
