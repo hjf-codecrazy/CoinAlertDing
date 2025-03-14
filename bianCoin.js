@@ -111,7 +111,7 @@ const targetRanges = {
     ETH: 30,
     BTC: 300,
     BNB: 10, 
-    XRP:0.1
+    XRP:0.01
 };
 
 // 主函数：获取价格并发送通知
